@@ -1,0 +1,49 @@
+#include <REGX52.H>
+
+void Delay(unsigned int xms);
+unsigned char LEDNum;//全局变量，默认为零
+void main()
+{
+	P2=~0x01;//初始化，及得取反让灯变亮
+	//unsigned char LEDNum=0;//局部变量。定义字符变量8位二进制
+	while(1)
+	{
+		if(P3_1==0){
+		while(P3_1==0);//保证按下松开开关可以亮，不松开不亮
+		Delay(20);
+		
+		LEDNum++;
+		if(LEDNum>=8)
+				LEDNum=0;//防止越界
+					P2=~(0x01<<LEDNum);//右移，取反让led亮
+			}
+	
+		if(P3_1==0)
+		{
+			Delay(20);
+			while(P3_0==0);
+			Delay(20);
+			
+			if(LEDNum==0)
+				LEDNum=7;//防止越界不能为负数
+			else
+			LEDNum--;//数值减一
+					P2=~(0x01>>LEDNum);//左移，取反让led亮
+		}
+	}
+}
+
+void Delay(unsigned int xms)
+{
+	unsigned char i, j;
+	while(xms--)
+	{
+		i = 2;
+		j = 239;
+		do
+		{
+			while (--j);
+		} while (--i);
+	}
+}
+
