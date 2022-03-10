@@ -1,0 +1,115 @@
+#include <REGX52.H>
+
+void main()
+{
+	/*点亮LED6显示为6
+	P2_2=1;
+	P2_3=0;
+	P2_4=1;//138译码器CBA=101，十进制为5（138范围0-7）所以为LED6
+	P0=0x7D;//0111 1101对应P07-P00,其中dp灭,gfedc亮,b灭,a亮就是数字6
+	while(1);*/
+	P2_2=1;
+	P2_3=0;
+	P2_4=0;//138译码器CBA=100，十进制为4 （138范围0-7）所以为LED6
+	P0=0x7D;//数字6
+	while(1);
+}
+
+#include <REGX52.H>
+
+void Nixie(unsigned char Location,Number);
+unsigned char NixieTable[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+void main()
+{
+	Nixie(7,2);//注意标点
+	while(1);
+}
+void Nixie(unsigned char Location,Number)
+{
+	switch(Location)
+	{
+		case 1:
+			P2_4=1;P2_3=1;P2_2=1;break;
+		case 2:
+			P2_4=1;P2_3=1;P2_2=0;break;
+		case 3:
+			P2_4=1;P2_3=0;P2_2=1;break;
+		case 4:
+			P2_4=1;P2_3=0;P2_2=0;break;
+		case 5:
+			P2_4=0;P2_3=1;P2_2=1;break;
+		case 6:
+			P2_4=0;P2_3=1;P2_2=0;break;
+		case 7:
+			P2_4=0;P2_3=0;P2_2=1;break;
+		case 8:
+			P2_4=0;P2_3=0;P2_2=0;break;
+		}
+		//P0=0x7D;//数字6
+		P0=NixieTable[Number];
+}
+
+
+
+//
+#include <REGX52.H>
+
+void Delay(unsigned int xms);
+void Nixie(unsigned char Location,Number);
+unsigned char NixieTable[]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+void main()
+{
+	while(1)
+	{
+		Nixie(1,1);
+		Delay(2000);//数码管消影，位选 段选 位选 段选，就会出现串位，需要添加清零
+		Nixie(2,2);
+		Delay(2000);
+		Nixie(3,3);
+		Delay(2000);
+		Nixie(4,4);
+		Delay(2000);
+	}
+}
+
+void Delay(unsigned int xms)
+{
+	unsigned char i,j;
+	while(xms--)
+	{
+		i=2;
+		j=239;
+		do
+		{
+			while(--j);
+		}while(--i);
+	}
+	
+}
+void Nixie(unsigned char Location,Number)
+{
+	switch(Location)
+	{
+		case 1:
+			P2_4=1;P2_3=1;P2_2=1;break;
+		case 2:
+			P2_4=1;P2_3=1;P2_2=0;break;
+		case 3:
+			P2_4=1;P2_3=0;P2_2=1;break;
+		case 4:
+			P2_4=1;P2_3=0;P2_2=0;break;
+		case 5:
+			P2_4=0;P2_3=1;P2_2=1;break;
+		case 6:
+			P2_4=0;P2_3=1;P2_2=0;break;
+		case 7:
+			P2_4=0;P2_3=0;P2_2=1;break;
+		case 8:
+			P2_4=0;P2_3=0;P2_2=0;break;
+		}
+		//P0=0x7D;//数字6
+		P0=NixieTable[Number];
+		Delay(1);
+		P0=0x00;//清零
+		
+}
